@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 set -x
+
+# show all environment variables
 env
 
 git config --global user.email "build@travis-ci.com"
