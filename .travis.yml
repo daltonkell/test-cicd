@@ -15,11 +15,11 @@ after_success:
 # tag and release, only on master branch
 deploy:
   - on:
-    branch: master
+      branch: master
 
-    # TRAVIS_COMMIT is commit being built
-    condition: -z $(git tag --points-at $TRAVIS_COMMIT)
+      # TRAVIS_COMMIT is commit being built
+      condition: -z $(git tag --points-at $TRAVIS_COMMIT)
 
-  # tell Travis to invoke the following script
-  provider: script
-  script: $TRAVIS_BUILD_DIR/bin/travis_release.sh
+    # tell Travis to invoke the following script
+    provider: script
+    script: $TRAVIS_BUILD_DIR/bin/travis_release.sh
