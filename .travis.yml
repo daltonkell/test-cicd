@@ -5,3 +5,21 @@ compiler: gcc
 # compile the project
 script:
   - gcc hello_cicd.c -o prog && ./prog
+
+# increment the last git tag available; takes place after the 'script' phase
+after_success:
+  - export LAST_GIT_TAG_VERSION=$(git describe --abbrev=0 --tags) && \
+    export LAST_GIT_TAG_VERSION=${LAST_GIT_TAG_VERSION:1}
+  - export GIT_TAG_VERSION=$((LAST_GIT_TAG_VERSION+1))
+
+# tag and release, only on master branch
+deploy:
+  - on:
+    branch: master
+
+    # TRAVIS_COMMIT is commit being built
+    condition: -z $(git tag --points-at $TRAVIS_COMMIT)
+
+  # tell Travis to invoke the following script
+  provider: script
+  script: $TRAVIS_BUILD_DIR/bin/travis_release.sh
