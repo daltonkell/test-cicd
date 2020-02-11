@@ -1,0 +1,7 @@
+dist: xenial
+language: c
+compiler: gcc
+
+# compile the project
+script:
+  - gcc hello_cicd.c -o prog && ./prog
