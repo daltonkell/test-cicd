@@ -1,21 +1,23 @@
+os: linux
 dist: xenial
 language: c
 compiler: gcc
+services:
+- docker
+before_install:
+- docker pull gcc:7.5.0
+
+install:
+- docker build -t testcicd .
 
 script:
-- gcc hello_cicd.c -o prog && ./prog
-
-before_deploy:
-- env
-- git config --local user.name "Travis CI Auto-Deploy"
-- git config --local user.email "build@travis-ci.com"
-- export TRAVIS_TAG=${TRAVIS_TAG:-$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)}
-- git tag $TRAVIS_TAG
+- docker run -t testcicd
 
 deploy:
-  provider: releases
-  api_key:
-    secure: kjwP8RJsBc9nKsBLRFam6PYDkBiWjnYr4quH3jPiwJQod6i5kMVDJxx97JwREnNWUgG22wrMpiby13sxItWrzUNbMHQtbrG9kQ6ZlsfBLL2l19NXoJI3S0d28dqcrwSuDtKaU00hQ+AHl9QrSBI0ABRQC2/IjEN49BElDHbG/ZfU4Qk6yli/wXksVQdgPnVmZ9rWPIaOBGn40ypc9offVb/eF0Ff5jJFH4Xtzx1ip9yxBHIRnRFV5MzZZPL9RJZ9IrlvmTfe6hRh6zX0Za89mGXA6jzbwkD20l66vNfLECnoYy/B3YuQJwaiIwbPDhWsYRi9Hbae1xOIJPdlGFaEyKMPdkWkfF/K3um4oukI/hLKxiBPLxeCCsX7Ijve2BTVCB/qqsuP7yghPOKZvycb2xsPXVm1Amj0+Z4Wkz43R3je9UYho+HhvDNfmFUTV6T4TM1oOWOeE0evVzAsRBWf2M+3Zsh9UYg0PGNTiyJMLp7/h9cmdrAoSUkEs0hys255k7d+p8yzuma7VJDpupK9iQxdkhxx3WDJ2WdDfB/4Rxkp5xBk7bUz9SvULNY5Zf6cdtuDRX64ZidT0vtolnqFRdUPoQDRr1VXYqwA4r6GPxCDrOkjnGWyaSdku+1qLxvfNTNwwjA3QH+ZiN2FeeE1MreRz6WqSs8msuxeAaHViLc=
-  on:
-    repo: daltonkell/test-cicd
-    branch: master
+  - provider: script
+    script: bash "$TRAVIS_BUILD_DIR/scripts/docker_push.sh"
+    cleanup: false
+    on:
+      repo: daltonkell/test-cicd
+      branch: master
+      tags: true
