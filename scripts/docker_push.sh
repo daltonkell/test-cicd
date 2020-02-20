@@ -17,5 +17,5 @@ else
   
   echo "Tagging image with: $image_release_tag"
   docker tag testcicd:latest daltonkell/testcicd:$image_release_tag
-  docker push testcicd/testcicd
+  docker push daltonkell/testcicd
 fi
